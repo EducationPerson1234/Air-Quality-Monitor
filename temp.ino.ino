@@ -1,0 +1,76 @@
+#include <LiquidCrystal_I2C.h>
+
+//We'll start by adding our libraries
+
+
+
+#include <SimpleDHT.h>
+
+//Declaring digital pin no 6 as the dht11 data pin
+
+int pinDHT11 = 6;
+SimpleDHT11 dht11;
+
+//Declaring the lcd pins
+
+LiquidCrystal_I2C lcd(0x27,16,2);
+void setup() {
+// Don't forget to choose 9600 at the port screen
+  
+  Serial.begin(9600);
+ 
+//Telling our lcd to start up
+  
+  lcd.init();
+  lcd.clear();
+  lcd.backlight(); 
+   
+   
+}
+
+void loop() {
+
+  //These serial codes are for getting readings on the port screen aswell as the LCD display, since they'll offer us a more detailed interface
+  
+  
+  Serial.println("=================================");
+  Serial.println("DHT11 readings...");
+  
+ 
+  byte temperature = 0;
+  byte humidity = 0;
+  int err = SimpleDHTErrSuccess;
+
+  //This bit will tell our Arduino what to do if there is some sort of an error at getting readings from our sensor
+  if ((err = dht11.read(pinDHT11, &temperature, &humidity, NULL)) != SimpleDHTErrSuccess) {
+    Serial.print("No reading , err="); Serial.println(err);delay(1000);
+    return;
+  }
+  
+  Serial.print("Readings: ");
+  Serial.print((int)temperature); Serial.print(" Celcius, ");
+  Serial.print((int)humidity); Serial.println(" %");
+ 
+  //Telling our lcd to refresh itself every 0.75 seconds
+  lcd.clear();
+ 
+  //Choosing the first line and row
+  lcd.setCursor(0,0);
+  //Typing Temp: to the first line starting from the first row
+  lcd.print("Temp: ");
+  //Typing the temperature readings after "Temp: " 
+  lcd.print((int)temperature);
+  lcd.print(" C");
+  //Choosing the second line and first row
+  lcd.setCursor(0,1);
+  //Typing Humidity(%): to the second line starting from the first row
+  lcd.print("Humidity: ");
+  //Typing the humidity readings after "Humidity(%): "
+  lcd.print((int)humidity);
+  lcd.print(" %");
+ 
+  
+  
+  
+  delay(750);
+}
