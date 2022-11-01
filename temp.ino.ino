@@ -21,7 +21,7 @@ void setup() {
  
 //Telling our lcd to start up
   
-  lcd.init();
+  lcd.begin();
   lcd.clear();
   lcd.backlight(); 
    
